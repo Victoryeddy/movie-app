@@ -6,9 +6,9 @@
       Home
       </router-link>
     </header>
-    <main>
+    <v-main>
       <router-view />
-    </main>
+    </v-main>
   </v-app>
 </template>
 <script>
@@ -24,12 +24,15 @@ export default {
 
 <style scoped>
 * {
-  padding: 0;
-  margin: 0;
+  /* padding: 0; */
+  /* margin: 0; */
   font-family: "Fira Sans", sans-serif;
-  background-color: #35495e;
   /* outline:1px solid red; */
 }
+/* 
+body{
+  background-color: #35495e;
+} */
 header {
   background-color: #2c3e4e;
   box-shadow: 0,4px,6px rgb(248, 246, 246)
