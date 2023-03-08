@@ -32,11 +32,11 @@
       </v-row>
     </v-form>
 
-    <v-row >
+    <v-row justify="center">
       <v-col cols="12" lg="4"  v-for="movie in movies" :key="movie.imdbID" >
         <v-card >
         <router-link :to="'/movie/' + movie.imdbID">
-          <v-img :src="movie.Poster" :alt="movie.Title"/>
+          <v-img :src="movie.Poster" :alt="movie.Title" class="img-poster"/>
         </router-link>
         </v-card>
       </v-col>
@@ -82,6 +82,11 @@ export default {
 };
 </script>
 <style>
+.img-poster{
+  width:100%;
+  height:60vh
+  
+}
 .submitButton {
   padding: 1.7rem 2rem !important;
 }
