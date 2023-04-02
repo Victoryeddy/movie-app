@@ -1,94 +1,123 @@
 <template>
   <div>
-    <v-card>
-      <router-link to="/movie/tt23490" class="card-header">
-        <v-img
-          src="@/assets/movieposter.jpg"
-          class="white--text align-end"
-          gradient="to bottom, rgba(0,0,0,.3), rgba(0,0,0,.7)"
-          height="550px"
+    <v-card justify="center">
+      <v-img
+        src="@/assets/movieposter.jpg"
+        class="white--text align-end justify-center"
+        gradient="to bottom, rgba(0,0,0,.3), rgba(0,0,0,.8)"
+        cover
+        height="550px"
+      >
+        <v-card-title
+          class="text-decoration-none text-h4 font-weight-bold text-center"
+          >Movie Poster</v-card-title
         >
-          <v-card-title class="text-decoration-none fs-7"
-            >Movie Poster</v-card-title
-          >
-          <v-card-subtitle class="pt-2 fs-6"
-            >Discover the best movies and playlists on our site.
-          </v-card-subtitle>
-        </v-img>
-      </router-link>
+        <v-card-subtitle class="pt-2 text-h6"
+          >Discover the best movies and playlists on our site.
+        </v-card-subtitle>
+        <v-form @submit.prevent="searchMovies" ref="form" class="mt-5 ml-3">
+          <v-row no-gutters class="mt-3">
+            <v-col cols="12" lg="4">
+              <v-text-field
+                v-model="searchName"
+                label="Enter Your Search"
+                color="primary"
+                type="search"
+                input-text-color="#fff"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" lg="3">
+              <v-btn class="submitButton" type="submit" @click="searchMovies"
+                >Search</v-btn
+              >
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-img>
     </v-card>
-    <v-form @submit.prevent="searchName" ref="form">
-      <v-row no-gutters class="mt-3">
-        <v-col cols="12" lg="4">
-          <v-text-field
-            v-model="firstName"
-            label="Enter Your Search"
-            outlined
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" lg="3" class="d-flex">
-          <v-btn class="submitButton" type="submit">Search</v-btn>
+    <div v-if="showResults" class="mt-4">
+      <v-row justify="center">
+        <v-col cols="12" lg="4" v-for="movie in movies" :key="movie.id" >
+          <v-card >
+            <v-img :src="movie.image" :alt="movie.title" />
+          </v-card>
         </v-col>
       </v-row>
-    </v-form>
-
-    <v-row justify="center">
-      <v-col cols="12" lg="4"  v-for="movie in movies" :key="movie.imdbID" >
-        <v-card >
-        <router-link :to="'/movie/' + movie.imdbID">
-          <v-img :src="movie.Poster" :alt="movie.Title" class="img-poster"/>
-        </router-link>
-        </v-card>
-      </v-col>
-    </v-row>
+    </div>
   </div>
 </template>
 
 <script>
-import env from '@/env.js'
 export default {
   /* eslint-disable */
   name: "Home",
   data() {
     return {
-      firstName: "",
-      movies:[],
+      searchName: "",
+      movies: [],
+      showResults: false,
+      api_key: "your_api_key",
     };
   },
   methods: {
-    searchName() {
-      // if (this.firstName != "") {
-      //   console.log(this.firstName);
-      //   this.$http
-      //     .get(`?apikey=${env.apikey}&s=${this.firstName}`)
-      //     .then((response) => {
-      //       console.log(response.data);
-      //     })
-      //     .catch((error) => {
-      //       console.log(error);
-      //     });
-      // }
+    searchMovies() {
       if (this.firstName != "") {
-        fetch(`http://www.omdbapi.com/?apiKey=${env.apikey}&s=${this.firstName}`)
-        .then(response => response.json())
-        .then(data => {
-          this.movies = data.Search
-          console.log(this.movies);
+        this.$http
+          .get(
+            `https://imdb-api.com/en/API/SearchAll/${this.api_key}/${this.searchName}`
+          )
+          .then((response) => {
+            this.movies = response.data.results;
+            console.log(this.movies);
+            this.showResults = true;
             this.$refs.form.reset();
+          })
+          .catch((error) => {
+            console.log(error);
           });
       }
     },
+
+    // comingSoonItems() {
+    //   fetch(`https://imdb-api.com/en/API/ComingSoon/${this.api_key}`)
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //       console.log(data);
+    //     });
+    // },
   },
 };
 </script>
 <style>
-.img-poster{
-  width:100%;
-  height:60vh
-  
-}
+/* .img-poster {
+  width: 80vw;
+  height: 80vh;
+} */
 .submitButton {
   padding: 1.7rem 2rem !important;
+}
+
+/* .v-text-field::-moz-focus-inner {
+  background-color: #e5e5e5 !important;
+} */
+
+.theme--light.v-text-field--outlined:not(.v-input--is-focused):not(
+    .v-input--has-state
+  )
+  > .v-input__control
+  > .v-input__slot
+  fieldset {
+  color: #e5e5e5;
+  border-color: #e5e5e5;
+}
+
+.theme--light.v-label {
+  color: #e5e5e5 !important;
+}
+
+.theme--light.v-input input {
+  color: #fff !important;
 }
 
 .fs-7 {
